@@ -28,6 +28,30 @@ public class GymManager{
 			//appTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 			topPart.add(appTitle, BorderLayout.CENTER);
 
+			JPanel tempPanel = new JPanel();
+			tempPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+			
+			GridLayout twoButtonsLayout = new GridLayout(2, 1);
+			tempPanel.setLayout(twoButtonsLayout);
+
+			JButton addButton = new JButton("+");
+			addButton.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e){
+					addButtonClicked();
+				}
+			});
+			tempPanel.add(addButton);
+
+			JButton complexButton = new JButton("*");
+			complexButton.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e){
+					complexButtonClicked();
+				}
+			});
+			tempPanel.add(complexButton);
+
+			topPart.add(tempPanel, BorderLayout.EAST);
+
 			parentPanel.add(topPart, BorderLayout.NORTH);
 		}
 
@@ -162,6 +186,16 @@ public class GymManager{
 	public void applyMembershipModel(){
 		table.setModel(new MembershipModel());
 		displayMode = 3;
+	}
+
+	public void addButtonClicked(){
+		System.out.println("add clicked");
+		AddCustomDialog addDialog = new AddCustomDialog(mainFrame);
+	}
+
+	public void complexButtonClicked(){
+		System.out.println("complex clicked");
+		ComplexQueriesDialog queriesDialog = new ComplexQueriesDialog(mainFrame);
 	}
 
 	public static void main(String[] args){

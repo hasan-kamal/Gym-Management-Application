@@ -16,9 +16,9 @@ public class StaffModel extends AbstractTableModel{
 			
 			Class.forName ("com.mysql.jdbc.Driver");
 			//Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@db.yale.edu:1521:univdb",userid, passwd);
-			String url = "jdbc:" + "mysql" + "://" + "localhost" + ":" + "3306" + "/" + "gym" + "?autoReconnect=true&useSSL=false";
-			String userid = "root";
-			String passwd = "hasankamal";
+			String url = "jdbc:" + "mysql" + "://" + "localhost" + ":" + "3306" + "/" + Constants.dbName + "?autoReconnect=true&useSSL=false";
+			String userid = Constants.userid;
+			String passwd = Constants.password;
 
 			Connection conn = DriverManager.getConnection(url, userid, passwd);
  			
