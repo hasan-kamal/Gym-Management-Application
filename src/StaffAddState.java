@@ -8,8 +8,8 @@ public class StaffAddState extends AddState{
 	//Staff(s_id, first_name, last_name, street, city, state, zip, designation, date_birth)
 	JTextField textFields[];
 
-	public StaffAddState(){
-		super();
+	public StaffAddState(AddCustomDialog d){
+		super(d);
 		textFields = new JTextField[10];
 		this.add(new JPanel(){
 			public JPanel make(){
@@ -93,7 +93,26 @@ public class StaffAddState extends AddState{
 	}
 
 	public void addClicked(){
+		super.addClicked();
+
+		String str = "\'"+textFields[0].getText()+"\'" + ", ";
+		str += ("\'"+textFields[1].getText()+"\'" + ", ");
+		str += ("\'"+textFields[2].getText()+"\'" + ", ");
+		str += ("\'"+textFields[3].getText()+"\'" + ", ");
+		str += ("\'"+textFields[4].getText()+"\'" + ", ");
+		str += ("\'"+textFields[5].getText()+"\'" + ", ");
+		str += ("\'"+textFields[6].getText()+"\'" + ", ");
+		str += ("\'"+textFields[7].getText()+"\'" + ", ");
+		str += ("\'"+textFields[8].getText()+"\'");
 		
+		try{
+			stmt.executeUpdate("insert into Staff values(" + str + ")"); 
+			stmt.close();
+			conn.close();
+			parentDialog.dispose();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 }

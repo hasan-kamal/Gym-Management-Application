@@ -8,8 +8,8 @@ public class MembershipAddState extends AddState{
 	//MembershipPlan(m_code, name, price, duration)
 	JTextField textFields[];
 
-	public MembershipAddState(){
-		super();
+	public MembershipAddState(AddCustomDialog d){
+		super(d);
 		textFields = new JTextField[4];
 		this.add(new JPanel(){
 			public JPanel make(){
@@ -53,7 +53,21 @@ public class MembershipAddState extends AddState{
 	}
 
 	public void addClicked(){
+		super.addClicked();
+
+		String str = "\'"+textFields[0].getText()+"\'" + ", ";
+		str += ("\'"+textFields[1].getText()+"\'" + ", ");
+		str += ("\'"+textFields[2].getText()+"\'" + ", ");
+		str += ("\'"+textFields[3].getText()+"\'");
 		
+		try{
+			stmt.executeUpdate("insert into MembershipPlan values(" + str + ")"); 
+			stmt.close();
+			conn.close();
+			parentDialog.dispose();
+		}catch(Exception e){
+			e.printStackTrace();
+		}		
 	}
 
 }

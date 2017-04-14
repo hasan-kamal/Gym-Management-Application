@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
+import java.sql.*;
 
 public class CustomerAddState extends AddState{
 
@@ -8,8 +9,8 @@ public class CustomerAddState extends AddState{
 	//Customer(c_id, first_name, last_name, street, city, state, zip, date_birth, m_code, m_start_date)	
 	JTextField textFields[];
 
-	public CustomerAddState(){
-		super();
+	public CustomerAddState(AddCustomDialog d){
+		super(d);
 		textFields = new JTextField[10];
 		this.add(new JPanel(){
 			public JPanel make(){
@@ -101,7 +102,27 @@ public class CustomerAddState extends AddState{
 	}
 
 	public void addClicked(){
+		super.addClicked();
+
+		String str = "\'"+textFields[0].getText()+"\'" + ", ";
+		str += ("\'"+textFields[1].getText()+"\'" + ", ");
+		str += ("\'"+textFields[2].getText()+"\'" + ", ");
+		str += ("\'"+textFields[3].getText()+"\'" + ", ");
+		str += ("\'"+textFields[4].getText()+"\'" + ", ");
+		str += ("\'"+textFields[5].getText()+"\'" + ", ");
+		str += ("\'"+textFields[6].getText()+"\'" + ", ");
+		str += ("\'"+textFields[7].getText()+"\'" + ", ");
+		str += ("\'"+textFields[8].getText()+"\'" + ", ");
+		str += ("\'"+textFields[9].getText()+"\'");
 		
+		try{
+			stmt.executeUpdate("insert into Customer values(" + str + ")"); 
+			stmt.close();
+			conn.close();
+			parentDialog.dispose();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 }

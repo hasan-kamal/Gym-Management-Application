@@ -2,13 +2,16 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 
-public class AddCustomDialog extends JDialog implements ActionListener{
+public class AddCustomDialog extends JDialog{
 
 	JPanel mainPanel;
 	AddState currentState;
+	GymManager gymManager;
+	int cState;
 
-	public AddCustomDialog(JFrame parentFrame){
+	public AddCustomDialog(JFrame parentFrame, GymManager g){
 		super(parentFrame, "Add new entry", true);
+		gymManager = g;
 		setLocation(parentFrame.getLocation().x+80, parentFrame.getLocation().y+80);
 		//setSize(parentFrame.getSize().width/2, parentFrame.getSize().height/2);
 
@@ -38,16 +41,20 @@ public class AddCustomDialog extends JDialog implements ActionListener{
 			mainPanel.remove(currentState);
 		switch(panelIndex){
 			case 0:
-				currentState = new CustomerAddState();
+				currentState = new CustomerAddState(this);
+				cState = 0;
 				break;
 			case 1:
-				currentState = new StaffAddState();
+				currentState = new StaffAddState(this);
+				cState = 1;
 				break;
 			case 2:
-				currentState = new EquipmentAddState();
+				currentState = new EquipmentAddState(this);
+				cState = 2;
 				break;
 			case 3:
-				currentState = new MembershipAddState();
+				currentState = new MembershipAddState(this);
+				cState = 3;
 				break;
 		};
 		mainPanel.add(currentState, BorderLayout.CENTER);
@@ -55,8 +62,15 @@ public class AddCustomDialog extends JDialog implements ActionListener{
 		mainPanel.repaint();
 	}
 
-	public void actionPerformed(ActionEvent e){
-		//dispose();
+	public void dispose(){
+		if(cState==0)
+			gymManager.applyCustomerModel();
+		else if(cState==1)
+			gymManager.applyStaffModel();
+		else if(cState==2)
+			gymManager.applyEquipmentModel();
+		else if(cState==3)
+			gymManager.applyMembershipModel();
+		super.dispose();
 	}
-
 }

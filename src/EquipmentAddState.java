@@ -8,8 +8,8 @@ public class EquipmentAddState extends AddState{
 	//Equipment(e_id, name, type, is_working)
 	JTextField textFields[];
 
-	public EquipmentAddState(){
-		super();
+	public EquipmentAddState(AddCustomDialog d){
+		super(d);
 		textFields = new JTextField[4];
 		this.add(new JPanel(){
 			public JPanel make(){
@@ -53,7 +53,21 @@ public class EquipmentAddState extends AddState{
 	}
 
 	public void addClicked(){
+		super.addClicked();
+
+		String str = "\'"+textFields[0].getText()+"\'" + ", ";
+		str += ("\'"+textFields[1].getText()+"\'" + ", ");
+		str += ("\'"+textFields[2].getText()+"\'" + ", ");
+		str += ("\'"+textFields[3].getText()+"\'");
 		
+		try{
+			stmt.executeUpdate("insert into Equipment values(" + str + ")"); 
+			stmt.close();
+			conn.close();
+			parentDialog.dispose();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 }
