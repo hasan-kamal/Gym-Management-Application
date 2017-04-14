@@ -266,7 +266,7 @@ public class AddCustomDialog extends JDialog implements ActionListener{
 	}
 
 	public void addCustomerClicked(){
-
+		
 	}
 
 	public void addStaffClicked(){
