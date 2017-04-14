@@ -1,0 +1,27 @@
+//Schema for Customer relation:
+	//	Customer(c_id, first_name, last_name, street, city, state, zip, date_birth, m_code, m_start_date)
+	//  insert into Customer values(1, 'Jeff', 'Bezos', 'Some Amazon Street', 'New York City', 'New York', 910191, '01-01-1970', 1, '01-01-1970');
+	//  create table Customer( c_id int, first_name varchar(50), last_name varchar(50), street varchar(50), city varchar(50), state varchar(50), zip int, date_birth varchar(50), m_code int, m_start_date varchar(50), primary key(c_id));
+	// create table CustomerLog(day varchar(15), dt date, tm time, in_or_out boolean, c_id int);
+	// create table StaffLog(day varchar(15), dt date, tm time, in_or_out boolean, s_id int);
+	// insert into CustomerLog values('Fri','2017-04-14', '07:30:00', 'TRUE', 1);
+	// insert into CustomerLog values('Fri','2017-04-14', '08:30:00', 'FASLE', 1);
+	// insert into CustomerLog values('Fri','2017-04-14', '08:00:00', 'TRUE', 2);
+	// insert into CustomerLog values('Fri','2017-04-14', '10:30:00', 'FALSE', 2);
+	// insert into CustomerLog values('Sun','2017-04-16', '17:00:00', 'TRUE', 3);
+	// insert into CustomerLog values('Sun','2017-04-16', '18:59:00', 'FALSE', 3);
+	// insert into CustomerLog values('Tue','2017-04-18', '19:00:00', 'TRUE', 1);
+	// insert into CustomerLog values('2017-04-18', '20:50:00', 'FALSE', 1);
+	// insert into StaffLog(1, '2017-04-14','07:00:00','TRUE');
+	// insert into StaffLog(1, '2017-04-14','21:00:00','FALSE');
+	// insert into StaffLog(2, '2017-04-14','07:30:00','TRUE');
+	// insert into StaffLog(2, '2017-04-14','20:00:00','FALSE');
+	// insert into StaffLog(1, '2017-04-15','07:00:00','TRUE');
+	// insert into StaffLog(1, '2017-04-15','09:00:00','FALSE');
+	// insert into StaffLog(2, '2017-04-15','07:30:00','TRUE');
+	// insert into StaffLog(2, '2017-04-15','20:00:00','FALSE');
+	// insert into StaffLog(3, '2017-04-14','07:30:00','TRUE');
+	// insert into StaffLog(3, '2017-04-14','20:00:00','FALSE');
+
+
+	// SHOW 10 AT A TIME(RESULTS).
