@@ -4,6 +4,8 @@ import javax.swing.border.*;
 import java.awt.event.*;
 import javax.swing.table.*;
 import java.sql.*;
+import java.util.*;
+import java.text.SimpleDateFormat;
 
 public class GymManager{
 
@@ -11,6 +13,11 @@ public class GymManager{
 	JTable table;
 	JButton buttonLeft, buttonRight, buttonModify, buttonDelete;
 	int displayMode; //0-Customer, 1-Staff, 2-Equipment, 3-Membership
+	JTextField checkInTextField, checkOutTextField;
+	Calendar c;
+
+	private final SimpleDateFormat sd  = new SimpleDateFormat("hh:mm:ss");
+	private final SimpleDateFormat sdDate = new SimpleDateFormat("yyyy-MM-dd");
 
 	public GymManager(){
 
@@ -28,7 +35,26 @@ public class GymManager{
 			appTitle.setFont(appTitle.getFont().deriveFont(20.0f));
 			appTitle.setBorder(new EmptyBorder(20, 20, 20, 20));
 			//appTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-			topPart.add(appTitle, BorderLayout.CENTER);
+			topPart.add(appTitle, BorderLayout.WEST);
+
+			JLabel timerLabel = new JLabel("");
+			timerLabel.setFont(timerLabel.getFont().deriveFont(20.0f));
+			timerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+			timerLabel.setBorder(new EmptyBorder(20, 20, 20, 20));
+			topPart.add(timerLabel, BorderLayout.CENTER);
+			
+			c = Calendar.getInstance();
+			ActionListener updateClock = new ActionListener() {
+			  public void actionPerformed(ActionEvent e) {
+			  		String s = "";
+			        s+=(new java.util.Date(System.currentTimeMillis()).toString());
+			        s+=" "; 
+			    	//s+=String.format("%s", sd.format(c.getTime())); 
+					timerLabel.setText(s);
+			    }
+			};
+			javax.swing.Timer t = new javax.swing.Timer(1000, updateClock);
+			t.start();
 
 			JPanel tempPanel = new JPanel();
 			tempPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -56,6 +82,9 @@ public class GymManager{
 
 			parentPanel.add(topPart, BorderLayout.NORTH);
 		}
+
+		JPanel outPanel = new JPanel();
+		outPanel.setLayout(new BoxLayout(outPanel, BoxLayout.PAGE_AXIS));
 
 		//CENTER
 		{
@@ -164,9 +193,86 @@ public class GymManager{
 				}
 
 				centerPanel.add(buttonList, BorderLayout.SOUTH);
+				centerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black));				
 			}
 
-			parentPanel.add(centerPanel, BorderLayout.CENTER);
+			outPanel.add(centerPanel);
+
+			//check-in panel
+			JPanel splitPanel = new JPanel();
+			GridLayout splitLayout = new GridLayout(1, 2);
+			splitPanel.setLayout(splitLayout);
+
+			{
+				JPanel checkInPanel = new JPanel();
+				checkInPanel.setLayout(new BoxLayout(checkInPanel, BoxLayout.PAGE_AXIS));
+				checkInPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+				
+				JLabel label = new JLabel("Check-in");
+				label.setFont(label.getFont().deriveFont(15.0f));
+				//label.setBorder(new EmptyBorder(20, 20, 20, 20));
+				//label.setAlignmentX(Component.CENTER_ALIGNMENT);
+				checkInPanel.add(label);
+
+				checkInTextField = new JTextField(10);
+				checkInPanel.add(checkInTextField);
+
+				JButton bCustomer = new JButton("Check-in customer");
+				bCustomer.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e){
+						checkinCustomer();
+					}
+				});
+				checkInPanel.add(bCustomer);
+
+				JButton bStaff = new JButton("Check-in staff");
+				bStaff.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e){
+						checkinStaff();
+					}
+				});
+				checkInPanel.add(bStaff);
+
+				splitPanel.add(checkInPanel);
+			}
+
+			//check-out panel
+			{
+				JPanel checkOutPanel = new JPanel();
+
+				checkOutPanel.setLayout(new BoxLayout(checkOutPanel, BoxLayout.PAGE_AXIS));
+				checkOutPanel.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.black), new EmptyBorder(20, 20, 20, 20)));
+				
+				JLabel label = new JLabel("Check-out");
+				label.setFont(label.getFont().deriveFont(15.0f));
+				//label.setBorder(new EmptyBorder(20, 20, 20, 20));
+				//label.setAlignmentX(Component.CENTER_ALIGNMENT);
+				checkOutPanel.add(label);
+
+				checkOutTextField = new JTextField(10);
+				checkOutPanel.add(checkOutTextField);
+
+				JButton bCustomer = new JButton("Check-out customer");
+				bCustomer.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e){
+						checkoutCustomer();
+					}
+				});
+				checkOutPanel.add(bCustomer);
+
+				JButton bStaff = new JButton("Check-out staff");
+				bStaff.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e){
+						checkoutStaff();
+					}
+				});
+				checkOutPanel.add(bStaff);
+
+				splitPanel.add(checkOutPanel);
+			}
+
+			outPanel.add(splitPanel);
+			parentPanel.add(outPanel, BorderLayout.CENTER);
 		}
 
 		//main JFrame
@@ -281,6 +387,190 @@ public class GymManager{
 
 	public static void main(String[] args){
 		GymManager manager = new GymManager();
+	}
+
+	public void checkinCustomer(){
+		try
+		{
+			Class.forName ("com.mysql.jdbc.Driver");
+			//Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@db.yale.edu:1521:univdb",userid, passwd);
+			String url = "jdbc:" + "mysql" + "://" + "localhost" + ":" + "3306" + "/" + Constants.dbName + "?autoReconnect=true&useSSL=false";
+			String userid = Constants.userid;
+			String passwd = Constants.password;
+
+			Connection conn = DriverManager.getConnection(url, userid, passwd);
+			
+			Statement stmt = conn.createStatement();
+
+			String day="", date="", time="", in_out="", inp="";
+			java.util.Date d = new java.util.Date(System.currentTimeMillis());
+			if(d.getDay()==0){
+				day = "Sun";
+			}else if(d.getDay()==1){
+				day = "Mon";
+			}else if(d.getDay()==2){
+				day = "Tue";
+			}else if(d.getDay()==3){
+				day = "Wed";
+			}else if(d.getDay()==4){
+				day = "Thu";
+			}else if(d.getDay()==5){
+				day = "Fri";
+			}else if(d.getDay()==6){
+				day = "Sat";
+			}
+
+			date=sdDate.format(d);
+			time=String.format("%s", sd.format(c.getTime()));
+			in_out="TRUE";
+			inp=checkInTextField.getText();
+
+			String query = "insert into CustomerLog values(\'" + day +"\',\'" + date + "\', \'" + time + "\', " + in_out + ", " + inp + ")";
+			System.out.println();
+			System.out.println(query);
+			System.out.println();
+			stmt.executeUpdate(query);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+
+	public void checkinStaff(){
+		try
+		{
+			Class.forName ("com.mysql.jdbc.Driver");
+			//Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@db.yale.edu:1521:univdb",userid, passwd);
+			String url = "jdbc:" + "mysql" + "://" + "localhost" + ":" + "3306" + "/" + Constants.dbName + "?autoReconnect=true&useSSL=false";
+			String userid = Constants.userid;
+			String passwd = Constants.password;
+
+			Connection conn = DriverManager.getConnection(url, userid, passwd);
+			
+			Statement stmt = conn.createStatement();
+
+			String day="", date="", time="", in_out="", inp="";
+			java.util.Date d = new java.util.Date(System.currentTimeMillis());
+			if(d.getDay()==0){
+				day = "Sun";
+			}else if(d.getDay()==1){
+				day = "Mon";
+			}else if(d.getDay()==2){
+				day = "Tue";
+			}else if(d.getDay()==3){
+				day = "Wed";
+			}else if(d.getDay()==4){
+				day = "Thu";
+			}else if(d.getDay()==5){
+				day = "Fri";
+			}else if(d.getDay()==6){
+				day = "Sat";
+			}
+
+			date=sdDate.format(d);
+			time=String.format("%s", sd.format(c.getTime()));
+			in_out="TRUE";
+			inp=checkInTextField.getText();
+
+			String query = "insert into StaffLog values(\'" + day +"\',\'" + date + "\', \'" + time + "\', " + in_out + ", " + inp + ")";
+			System.out.println();
+			System.out.println(query);
+			System.out.println();
+			stmt.executeUpdate(query);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+
+	public void checkoutCustomer(){
+		try
+		{
+			Class.forName ("com.mysql.jdbc.Driver");
+			//Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@db.yale.edu:1521:univdb",userid, passwd);
+			String url = "jdbc:" + "mysql" + "://" + "localhost" + ":" + "3306" + "/" + Constants.dbName + "?autoReconnect=true&useSSL=false";
+			String userid = Constants.userid;
+			String passwd = Constants.password;
+
+			Connection conn = DriverManager.getConnection(url, userid, passwd);
+			
+			Statement stmt = conn.createStatement();
+
+			String day="", date="", time="", in_out="", inp="";
+			java.util.Date d = new java.util.Date(System.currentTimeMillis());
+			if(d.getDay()==0){
+				day = "Sun";
+			}else if(d.getDay()==1){
+				day = "Mon";
+			}else if(d.getDay()==2){
+				day = "Tue";
+			}else if(d.getDay()==3){
+				day = "Wed";
+			}else if(d.getDay()==4){
+				day = "Thu";
+			}else if(d.getDay()==5){
+				day = "Fri";
+			}else if(d.getDay()==6){
+				day = "Sat";
+			}
+
+			date=sdDate.format(d);
+			time=String.format("%s", sd.format(c.getTime()));
+			in_out="FALSE";
+			inp=checkOutTextField.getText();
+
+			String query = "insert into CustomerLog values(\'" + day +"\',\'" + date + "\', \'" + time + "\', " + in_out + ", " + inp + ")";
+			System.out.println();
+			System.out.println(query);
+			System.out.println();
+			stmt.executeUpdate(query);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+
+	public void checkoutStaff(){
+		try
+		{
+			Class.forName ("com.mysql.jdbc.Driver");
+			//Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@db.yale.edu:1521:univdb",userid, passwd);
+			String url = "jdbc:" + "mysql" + "://" + "localhost" + ":" + "3306" + "/" + Constants.dbName + "?autoReconnect=true&useSSL=false";
+			String userid = Constants.userid;
+			String passwd = Constants.password;
+
+			Connection conn = DriverManager.getConnection(url, userid, passwd);
+			
+			Statement stmt = conn.createStatement();
+
+			String day="", date="", time="", in_out="", inp="";
+			java.util.Date d = new java.util.Date(System.currentTimeMillis());
+			if(d.getDay()==0){
+				day = "Sun";
+			}else if(d.getDay()==1){
+				day = "Mon";
+			}else if(d.getDay()==2){
+				day = "Tue";
+			}else if(d.getDay()==3){
+				day = "Wed";
+			}else if(d.getDay()==4){
+				day = "Thu";
+			}else if(d.getDay()==5){
+				day = "Fri";
+			}else if(d.getDay()==6){
+				day = "Sat";
+			}
+
+			date=sdDate.format(d);
+			time=String.format("%s", sd.format(c.getTime()));
+			in_out="FALSE";
+			inp=checkOutTextField.getText();
+
+			String query = "insert into StaffLog values(\'" + day +"\',\'" + date + "\', \'" + time + "\', " + in_out + ", " + inp + ")";
+			System.out.println();
+			System.out.println(query);
+			System.out.println();
+			stmt.executeUpdate(query);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 	}
 
 }
