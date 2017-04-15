@@ -10,7 +10,7 @@ public class EquipmentAddState extends AddState{
 
 	public EquipmentAddState(AddCustomDialog d){
 		super(d);
-		textFields = new JTextField[4];
+		textFields = new JTextField[5];
 		this.add(new JPanel(){
 			public JPanel make(){
 				this.setLayout(new FlowLayout(FlowLayout.TRAILING));
@@ -43,6 +43,14 @@ public class EquipmentAddState extends AddState{
 				return this;
 			}
 		}.make());
+		this.add(new JPanel(){
+			public JPanel make(){
+				this.setLayout(new FlowLayout(FlowLayout.TRAILING));
+				this.add(new JLabel("included in: "));
+				this.add(textFields[4] = new JTextField(10));
+				return this;
+			}
+		}.make());
 		JButton buttonAddEquipment = new JButton("Add");
 		buttonAddEquipment.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
@@ -61,6 +69,13 @@ public class EquipmentAddState extends AddState{
 		str += ("\'"+textFields[3].getText()+"\'");
 		
 		try{
+
+			String mList[] = textFields[4].getText().split(",");
+			for(String m : mList){
+				//System.out.println("insert into includes values("+textFields[0].getText()+", "+m+")");
+				stmt.executeUpdate("insert into includes values("+textFields[0].getText()+", "+m+")");
+			}
+
 			stmt.executeUpdate("insert into Equipment values(" + str + ")"); 
 			stmt.close();
 			conn.close();
@@ -68,6 +83,8 @@ public class EquipmentAddState extends AddState{
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+
+
 	}
 
 }
