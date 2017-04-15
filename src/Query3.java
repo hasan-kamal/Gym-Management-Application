@@ -6,6 +6,7 @@ public class Query3 extends ComplexQueryPanel{
 
 	JTextField f;
 	JButton button;
+	MyFilterTable jt;
 
 	Query3(){
 		super();
@@ -25,6 +26,20 @@ public class Query3 extends ComplexQueryPanel{
 
 	public void submitClicked(){
 		try{
+			
+			try{
+				Class.forName("com.mysql.jdbc.Driver");
+				//Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@db.yale.edu:1521:univdb",userid, passwd);
+				url = "jdbc:" + "mysql" + "://" + "localhost" + ":" + "3306" + "/" + Constants.dbName + "?autoReconnect=true&useSSL=false";
+				userid = Constants.userid;
+				passwd = Constants.password;
+
+				conn = DriverManager.getConnection(url, userid, passwd);	
+				stmt = conn.createStatement();
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+
 			String query1 = "select s_id, count(*) from StaffLog where in_or_out = TRUE group by s_id order by count(*)";
 			int rowCount=0;
 
@@ -59,11 +74,20 @@ public class Query3 extends ComplexQueryPanel{
 				}
 				System.out.println();
 			}
+			// String column[] = {"Customer id","Name"};
+			// JTable jt = new JTable(data, column);
+			// JScrollPane scrollPane = new JScrollPane(jt);
+			// jt.setFillsViewportHeight(true);
+			// this.add(scrollPane);
+			// this.revalidate();
+			// this.repaint();
+			
+			if(jt!=null)
+				this.remove(jt);
+			
 			String column[] = {"Customer id","Name"};
-			JTable jt = new JTable(data, column);
-			JScrollPane scrollPane = new JScrollPane(jt);
-			jt.setFillsViewportHeight(true);
-			this.add(scrollPane);
+			jt = new MyFilterTable(data, column);
+			this.add(jt);
 			this.revalidate();
 			this.repaint();
 		}catch(Exception e){

@@ -14,6 +14,36 @@ public class MyFilterTable extends JPanel{
 	JButton buttonLeft, buttonRight;
 	TableRowSorter<TableModel> sorter;
 
+	public MyFilterTable(Object[][] rowData, Object[] colNames){
+		this.setLayout(new BorderLayout());
+
+		table = new JTable(rowData, colNames);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane scrollPane = new JScrollPane(table);
+		table.setFillsViewportHeight(true);
+		this.add(scrollPane, BorderLayout.CENTER);
+
+		buttonLeft = new JButton("<-");
+		buttonLeft.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				leftClicked();
+			}
+		});
+		buttonRight = new JButton("->");
+		buttonRight.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				rightClicked();
+			}
+		});
+
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		buttonPanel.add(buttonLeft);
+		buttonPanel.add(buttonRight);
+		buttonPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
+
+		this.add(buttonPanel, BorderLayout.SOUTH);
+	}
+
 	public MyFilterTable(){
 		this.setLayout(new BorderLayout());
 

@@ -38,11 +38,14 @@ public class Query2 extends ComplexQueryPanel{
 				}
 				System.out.println();
 			}
+			// String column[] = {"No. of customers visited","Day"};
+			// JTable jt = new JTable(data, column);
+			// JScrollPane scrollPane = new JScrollPane(jt);
+			// jt.setFillsViewportHeight(true);
+			// this.add(scrollPane);
 			String column[] = {"No. of customers visited","Day"};
-			JTable jt = new JTable(data, column);
-			JScrollPane scrollPane = new JScrollPane(jt);
-			jt.setFillsViewportHeight(true);
-			this.add(scrollPane);
+			MyFilterTable jt = new MyFilterTable(data, column);
+			this.add(jt);
 		}catch(Exception e){
 			System.out.println("Exception : " + e);
 		}

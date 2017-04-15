@@ -330,7 +330,7 @@ public class GymManager{
 				applyEquipmentModel();
 			}else if(displayMode==3){
 				id = ((MembershipModel)x).data[ind][0];
-				stmt.executeUpdate("delete from MembershipPlan where m_id="+id);
+				stmt.executeUpdate("delete from MembershipPlan where m_code="+id);
 				applyMembershipModel();
 			}
 			System.out.println(id);
