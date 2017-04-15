@@ -1,2 +1,2 @@
-ten results at a time
+ten results at a time, also in Query5
 update includes with every membership plan added
