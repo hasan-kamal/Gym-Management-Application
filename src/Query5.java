@@ -1,11 +1,18 @@
 import javax.swing.*;
 import java.sql.*;
+import javax.swing.border.*;
 
 public class Query5 extends ComplexQueryPanel{
 
 	Query5(){
 		super();
 		try{
+			this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+			JLabel label = new JLabel();
+			label.setText("Display staff in increasing order of visits");
+			label.setBorder(new EmptyBorder(10, 10, 10, 10));
+			this.add(label);
+
 			String query1 = "select s_id, count(*) from StaffLog where in_or_out = TRUE group by s_id order by count(*)";
 			int rowCount=0;
 			rset = stmt.executeQuery(query1);

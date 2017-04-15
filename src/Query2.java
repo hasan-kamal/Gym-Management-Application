@@ -1,11 +1,18 @@
 import javax.swing.*;
 import java.sql.*;
+import javax.swing.border.*;
 
 public class Query2 extends ComplexQueryPanel{
 
 	Query2(){
 		super();
 		try{
+			this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+			JLabel label = new JLabel();
+			label.setText("Display number of customers visited for each day");
+			label.setBorder(new EmptyBorder(10, 10, 10, 10));
+			this.add(label);
+
 			String query1 = "select count(*), day from CustomerLog where in_or_out = TRUE group by day";
 			int rowCount=0;
 			rset = stmt.executeQuery(query1);

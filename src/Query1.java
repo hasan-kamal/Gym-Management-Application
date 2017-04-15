@@ -1,11 +1,18 @@
 import javax.swing.*;
 import java.sql.*;
+import javax.swing.border.*;
 
 public class Query1 extends ComplexQueryPanel{
 
 	Query1(){
 		super();
 		try{
+			this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+			JLabel label = new JLabel();
+			label.setText("Display membership plans with access to all equipment");
+			label.setBorder(new EmptyBorder(10, 10, 10, 10));
+			this.add(label);
+
 			String query1 = "select m_code from includes where e_id in (select e_id from equipment) group by m_code having count(*) = (select count(*) from equipment)";
 			int rowCount=0;
 			rset = stmt.executeQuery(query1);

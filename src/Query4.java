@@ -1,11 +1,18 @@
 import javax.swing.*;
 import java.sql.*;
+import javax.swing.border.*;
 
 public class Query4 extends ComplexQueryPanel{
 
 	Query4(){
 		super();
 		try{
+			this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+			JLabel label = new JLabel();
+			label.setText("Display number of customers in each membership plan category");
+			label.setBorder(new EmptyBorder(10, 10, 10, 10));
+			this.add(label);
+
 			String query1 = "select m_code,count(*) from Customer group by m_code";
 			int rowCount=0;
 			rset = stmt.executeQuery(query1);

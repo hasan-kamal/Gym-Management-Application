@@ -10,8 +10,8 @@ import java.text.SimpleDateFormat;
 public class GymManager{
 
 	JFrame mainFrame;
-	JTable table;
-	JButton buttonLeft, buttonRight, buttonModify, buttonDelete;
+	MyFilterTable table;
+	JButton buttonModify, buttonDelete;
 	int displayMode; //0-Customer, 1-Staff, 2-Equipment, 3-Membership
 	JTextField checkInTextField, checkOutTextField;
 	Calendar c;
@@ -134,12 +134,15 @@ public class GymManager{
 
 			//table
 			{
-				table = new JTable();
-				table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				// table = new JTable();
+				// table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				// applyCustomerModel();
+				// JScrollPane scrollPane = new JScrollPane(table);
+				// table.setFillsViewportHeight(true);
+				// centerPanel.add(scrollPane, BorderLayout.CENTER);
+				table = new MyFilterTable();
+				centerPanel.add(table, BorderLayout.CENTER);
 				applyCustomerModel();
-				JScrollPane scrollPane = new JScrollPane(table);
-				table.setFillsViewportHeight(true);
-				centerPanel.add(scrollPane, BorderLayout.CENTER);
 			}
 
 			//Second row of buttons
@@ -148,26 +151,10 @@ public class GymManager{
 				JPanel buttonList = new JPanel();
 				buttonList.setLayout(buttonsInRowLayout);
 
-				buttonLeft = new JButton("<-");
-				buttonLeft.addActionListener(new ActionListener(){
-					public void actionPerformed(ActionEvent e){
-
-					}
-				});
-				buttonList.add(buttonLeft);
-
-				buttonRight = new JButton("->");
-				buttonRight.addActionListener(new ActionListener(){
-					public void actionPerformed(ActionEvent e){
-
-					}
-				});
-				buttonList.add(buttonRight);
-
 				buttonModify = new JButton("Modify");
 				buttonModify.addActionListener(new ActionListener(){
 					public void actionPerformed(ActionEvent e){
-						int[] sel = table.getSelectedRows();
+						int[] sel = table.getTable().getSelectedRows();
 						if(sel.length>0){
 							modifyEntry(sel[0]);
 						}
@@ -178,7 +165,7 @@ public class GymManager{
 				buttonDelete = new JButton("Delete");
 				buttonDelete.addActionListener(new ActionListener(){
 					public void actionPerformed(ActionEvent e){
-						int[] sel = table.getSelectedRows();
+						int[] sel = table.getTable().getSelectedRows();
 						if(sel.length>0){
 							deleteEntry(sel[0]);
 						}
@@ -313,7 +300,8 @@ public class GymManager{
 		ComplexQueriesDialog queriesDialog = new ComplexQueriesDialog(mainFrame);
 	}
 
-	public void deleteEntry(int ind){
+	public void deleteEntry(int ind1){
+		int ind = table.getTable().convertRowIndexToModel(ind1);
 		try
 		{
 			Class.forName ("com.mysql.jdbc.Driver");
@@ -351,7 +339,8 @@ public class GymManager{
 		}
 	}
 
-	public void modifyEntry(int ind){
+	public void modifyEntry(int ind1){
+		int ind = table.getTable().convertRowIndexToModel(ind1);
 		try
 		{
 			Class.forName ("com.mysql.jdbc.Driver");
