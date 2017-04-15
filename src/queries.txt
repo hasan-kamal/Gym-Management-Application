@@ -1,0 +1,31 @@
+"select m_code from includes where e_id in (select e_id from equipment) group by m_code having count(*) = (select count(*) from equipment)"
+
+"select count(*), day from CustomerLog where in_or_out = TRUE group by day";
+
+"select s_id, count(*) from StaffLog where in_or_out = TRUE group by s_id order by count(*)";
+"select Customer.c_id, first_name from CustomerLog, Customer where Customer.c_id = CustomerLog.c_id and in_or_out = TRUE group by CustomerLog.c_id having count(*) > " + compVal;
+
+"select m_code,count(*) from Customer group by m_code";
+
+"select s_id, count(*) from StaffLog where in_or_out = TRUE group by s_id order by count(*)";
+
+"insert into StaffLog values(\'" + day +"\',\'" + date + "\', \'" + time + "\', " + in_out + ", " + inp + ")";
+"insert into CustomerLog values(\'" + day +"\',\'" + date + "\', \'" + time + "\', " + in_out + ", " + inp + ")";
+"insert into StaffLog values(\'" + day +"\',\'" + date + "\', \'" + time + "\', " + in_out + ", " + inp + ")";
+"insert into CustomerLog values(\'" + day +"\',\'" + date + "\', \'" + time + "\', " + in_out + ", " + inp + ")";
+
+"delete from Customer where c_id="+id
+"delete from Staff where s_id="+id);
+"delete from Equipment where e_id="+id);
+"delete from MembershipPlan where m_code="+id);
+
+"insert into includes values("+textFields[0].getText()+", "+m+")");
+"insert into Equipment values(" + str + ")"); 
+"insert into Staff values(" + str + ")"); 
+"insert into MembershipPlan values(" + str + ")"); 
+"insert into Customer values(" + str + ")")
+
+"update MembershipPlan set "+ str + " where m_code="+m_code); 
+"update Staff set "+ str + " where s_id="+sid); 
+"update Equipment set "+ str + " where e_id="+e_id); 
+"update Customer set "+ str + " where c_id="+cid);
